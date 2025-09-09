@@ -171,7 +171,7 @@ class OpenAIClient(private val httpClient: HttpClient) {
         return try {
             httpClient.post("https://api.openai.com/v1/chat/completions") {
                 contentType(ContentType.Application.Json)
-                header("Authorization", "Bearer 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")
+                header("Authorization", "")
                 setBody(Json.encodeToString(OpenAIRequest.serializer(), request))
             }
         } catch (e: Exception) {
