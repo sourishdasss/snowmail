@@ -160,24 +160,6 @@ class OpenAIClient(private val httpClient: HttpClient) {
             mapOf("role" to "user", "content" to prompt))
     }
 
-    // Send a request to the OpenAI API
-    private suspend fun sendOpenAIRequest(message: List<Map<String, String>>): HttpResponse {
-        val request = OpenAIRequest(
-            model = "gpt-3.5-turbo",
-            messages = message,
-            max_tokens = 500
-        )
-
-        return try {
-            httpClient.post("https://api.openai.com/v1/chat/completions") {
-                contentType(ContentType.Application.Json)
-                setBody(Json.encodeToString(OpenAIRequest.serializer(), request))
-            }
-        } catch (e: Exception) {
-            throw RuntimeException("Failed to call OpenAI API: ${e.message}")
-        }
-    }
-
     // Extract the email content from the OpenAI API response
     private suspend fun getEmailContent(response: HttpResponse): String? {
         val responseBody: String = response.bodyAsText()
@@ -192,6 +174,25 @@ class OpenAIClient(private val httpClient: HttpClient) {
         } catch (e: Exception) {
             println("Failed to parse content: ${e.message}")
             null
+        }
+    }
+
+    // Send a request to the OpenAI API
+    private suspend fun sendOpenAIRequest(message: List<Map<String, String>>): HttpResponse {
+        val request = OpenAIRequest(
+            model = "gpt-3.5-turbo",
+            messages = message,
+            max_tokens = 500
+        )
+
+        return try {
+            httpClient.post("https://api.openai.com/v1/chat/completions") {
+                contentType(ContentType.Application.Json)
+                header("Authorization", "Bearer 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")
+                setBody(Json.encodeToString(OpenAIRequest.serializer(), request))
+            }
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to call OpenAI API: ${e.message}")
         }
     }
 
